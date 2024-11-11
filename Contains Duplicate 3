@@ -1,0 +1,82 @@
+class Solution {
+public:
+
+    void remove(int val,multiset<int>& elements,multiset<int>& diff){
+        auto it = elements.find(val);
+
+        if(it != elements.begin()){
+            auto it_temp = it;
+            auto it_prev = (--it);
+            it = it_temp;
+            int d1 = abs((*it) - (*it_prev));
+            diff.erase(diff.find(d1));
+        }
+        auto it_temp = it;
+        auto it_next = (++it);
+        it = it_temp;
+        if(it_next != elements.end()){
+            int d2 = abs((*it) - (*it_next));
+            diff.erase(diff.find(d2));
+        }
+        if(it != elements.begin() && it_next != elements.end()) {
+            auto it_temp = it;
+            auto it_prev = (--it);
+            it = it_temp;
+            int d = abs((*it_prev) - (*it_next));
+            diff.insert(d);
+        }
+
+        elements.erase(elements.find(val));
+        return;
+    }
+    void add(int val,multiset<int>& elements,multiset<int>& diff){
+        elements.insert(val);
+
+        auto it = elements.find(val);
+        auto it_temp = it;
+        auto it_next = ++it;
+        it = it_temp;  
+        if(it != elements.begin() && it_next != elements.end()) {
+            auto it_temp = it;
+            auto it_prev = (--it);
+            it = it_temp;
+
+            int d1 = abs((*it) - (*it_prev));
+            int d2 = abs((*it) - (*it_next));
+            diff.insert(d1);
+            diff.insert(d2);
+            diff.erase(diff.find(abs((*it_prev) - (*it_next))));
+        }
+        else if(it == elements.begin()){
+            
+            int d2 = abs((*it) - (*it_next));
+            diff.insert(d2);
+        }
+        else if(it_next == elements.end()){
+            auto it_temp = it;
+            auto it_prev = (--it);
+            it = it_temp;
+            int d1 = abs((*it) - (*it_prev));
+            diff.insert(d1);
+        }
+    }
+    
+    bool containsNearbyAlmostDuplicate(vector<int>& nums, int indexDiff, int valueDiff) {
+        multiset<int> elements;   
+        multiset<int> diff;      
+        if (nums.size() < 2 || indexDiff < 1) return false;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (i > indexDiff) {
+                remove(nums[i - indexDiff - 1], elements, diff);
+            }
+            auto it = elements.lower_bound(nums[i] - valueDiff);
+            if (it != elements.end() && abs(*it - nums[i]) <= valueDiff) {
+                return true;
+            }
+            add(nums[i], elements, diff);
+        }
+
+        return false; 
+    }
+
+};
