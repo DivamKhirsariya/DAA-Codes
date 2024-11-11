@@ -1,0 +1,25 @@
+class Solution {
+public:
+    uint32_t reverseBits(uint32_t n) {
+        uint32_t res = 0;
+        // precomputed the 2^31 (1000...31times in bit form) value as we have to find reverse
+        // otherwise it would have 2^0 (1 in bit form)
+        uint32_t x = 1 << 31;
+
+        while (n) {
+            // checks if the bit is set or not using (n&1)
+            // if bit is set then add x to the res
+            // here x = 2^(31-i)
+            // where i will be the ith bit from right
+            if (n&1) res += x;
+
+            // update the n i.e n = n/2
+            n >>= 1;
+            // update the x i.e x = x/2
+            // since, we have to find reverse so instead of multiplying by 2 we have to divide by 2
+            x >>= 1;
+        }
+
+        return res;
+    }
+};
