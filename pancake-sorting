@@ -1,0 +1,32 @@
+class Solution:
+    def pancakeSort(self, arr):
+        def flip(sublist, k):
+            sublist[:k] = sublist[:k][::-1]
+        
+        result = []
+        n = len(arr)
+        
+        for size in range(n, 1, -1):
+            # Find the index of the largest element in the unsorted portion
+            max_index = arr.index(max(arr[:size]))
+            
+            # If the largest element is not already at the last position of the unsorted portion
+            if max_index != size - 1:
+                # If the largest element is not already at the first position, flip it to the first position
+                if max_index != 0:
+                    flip(arr, max_index + 1)
+                    result.append(max_index + 1)
+                
+                # Flip the largest element to its correct position
+                flip(arr, size)
+                result.append(size)
+        
+        return result
+
+# Example usage
+solution = Solution()
+arr1 = [3, 2, 4, 1]
+print(solution.pancakeSort(arr1))  # Output: [4, 2, 4, 3]
+
+arr2 = [1, 2, 3]
+print(solution.pancakeSort(arr2))
